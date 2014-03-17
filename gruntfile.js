@@ -42,7 +42,7 @@ module.exports = function(grunt) {
 			},
 			// End of CSS
 			// Pages
-			css: {
+			pages: {
 				files: ['*.html']
 			},
 			// End of Pages

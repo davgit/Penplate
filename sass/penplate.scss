@@ -8,16 +8,193 @@
 
 // Table of Contents:
 // ---------------------------------------------------------------------------------------
-// Penplate
+// Imports
+// Variables
+// Atoms
+// Molecules
+// Organisms
+// Execute
 
 
-// Penplate
+// Imports
 // ---------------------------------------------------------------------------------------
-.penplate {
-	&.penplate-default-text-true {
-		color: lighten(#000, 80%);
+@import "blueplate";
+
+
+// Variables
+// ---------------------------------------------------------------------------------------
+$link-dim 						: 46px;
+$img-root 						: "../img";
+
+
+// Atoms
+// ---------------------------------------------------------------------------------------
+// Global
+@mixin rounded-corners($radius: 2px) {
+	border-radius: $radius;
+	-o-border-radius: $radius;
+	-ms-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-webkit-border-radius: $radius;
+}
+@mixin border-left($size: 1px, $line-color: #000) {
+	border-left: solid $size $line-color;
+
+	@media screen and (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
+		border-left: 0px;
+		background-size: $size 100%;
+		background-repeat: no-repeat;
+		background-image: -webkit-gradient(linear, 50% 100%, 50% 0%, color-stop(0%, $line-color), color-stop(50%, $line-color), color-stop(50%, rgba(0, 0, 0, 0)));
+		background-image: -webkit-linear-gradient(left, $line-color,$line-color 50%,rgba(0, 0, 0, 0) 50%);
+		background-image: -moz-linear-gradient(left, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
+		background-image: -o-linear-gradient(left, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
+		background-image: linear-gradient(left, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
+		background-position: left;
 	}
+}
+@mixin border-right($size: 1px, $line-color: #000) {
+	border-right: solid $size $line-color;
+
+	@media screen and (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
+		border-right: 0px;
+		background-size: $size 100%;
+		background-repeat: no-repeat;
+		background-image: -webkit-gradient(linear, 50% 100%, 50% 0%, color-stop(0%, $line-color), color-stop(50%, $line-color), color-stop(50%, rgba(0, 0, 0, 0)));
+		background-image: -webkit-linear-gradient(right, $line-color,$line-color 50%,rgba(0, 0, 0, 0) 50%);
+		background-image: -moz-linear-gradient(right, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
+		background-image: -o-linear-gradient(right, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
+		background-image: linear-gradient(right, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
+		background-position: right;
+	}
+}
+@mixin animate($attribute, $transition-speed: 0.2s) {
+	-webkit-transition: $attribute $transition-speed ease-out;
+	-moz-transition: $attribute $transition-speed ease-out;
+	-o-transition: $attribute $transition-speed ease-out;
+	-ms-transition: $attribute $transition-speed ease-out;
+	transition: $attribute $transition-speed ease-out;
+}
+@mixin penplate-global() {
 	&:focus {
 		outline: none;
 	}
+}
+// Flat list
+@mixin flat-list() {
+	ul {
+		margin: 0px;
+		padding: 0px;
+		list-style: none;
+		font-size: 0;
+
+		li {
+			display: inline-block;
+		}
+	}
+}
+// Links
+@mixin links() {
+	a {
+		display: block;
+		width: $link-dim - 10px;
+		height: $link-dim;
+		line-height: $link-dim + 2px;
+		font-size: 15px;
+		font-family: "Book Antiqua", Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+		color: #fff;
+		text-decoration: none;
+		@include animate(background-color);
+
+		&:hover {
+			cursor: pointer;
+			color: lighten(#27ae60, 4%);
+			background-position: bottom;
+		}
+	}
+}
+@mixin hide-text() {
+	text-indent: -100000px;
+}
+// Backgrounds
+@mixin background-top() {
+	background-position: top;
+	background-repeat: no-repeat;
+}
+
+// Bottom arrow
+@mixin arrow-bottom() {
+	&:after {
+		top: 100%;
+		left: 50%;
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+		border-color: rgba(38, 38, 38, 0);
+		border-top-color: #262626;
+		border-width: 8px;
+		margin-left: -8px;
+	}
+}
+
+
+// Molecules
+// ---------------------------------------------------------------------------------------
+// List
+@mixin penplate-list() {
+	@include flat-list();
+	@include links();
+	text-align: center;
+}
+
+
+// Organisms
+// ---------------------------------------------------------------------------------------
+@mixin penplate-controls() {
+	@include penplate-list();
+	display: block;
+	position: fixed;
+	width: 100%;
+	bottom: 0px;
+	background-color: lighten(#000, 15%);
+
+	// Img links
+	.img-link,
+	.img-quote,
+	.img-image {
+		@include hide-text();
+		@include background-top();
+		background-size: 46px;
+	}
+	.img-link {
+		background-image: url("#{$img-root }/link.png");
+	}
+	.img-quote {
+		background-image: url("#{$img-root }/quote.png");
+	}
+	.img-image {
+		background-image: url("#{$img-root }/image.png");
+	}
+
+	// Respond
+	@include respond-to(large) {
+		top: 0;
+		bottom: auto;
+		width: auto;
+		padding: 0px 4px;
+		@include rounded-corners();
+		@include arrow-bottom();
+	}
+}
+
+
+// Execute
+// ---------------------------------------------------------------------------------------
+.penplate {
+	@include penplate-global();
+}
+.penplate-controls {
+	@include penplate-controls();
 }
