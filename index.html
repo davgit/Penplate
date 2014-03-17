@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Meta setup - Required for apple device -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+    <!-- Title -->
+    <title>Penplate</title>
+	
+    <!-- Required javascript -->
+    <script src="js/min/jquery-v1.10.2.min.js"></script>
+
+    <!-- Penplate -->
+    <link href="css/penplate.css" rel="stylesheet" type="text/css">
+    <script src="js/min/penplate.min.js"></script>
+	
+	<!-- Custom styles -->
+	<style>
+	html {
+		font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+		font-size: 16px;
+		background-color: #fff;
+	}
+	body {
+		margin: 0px;
+		padding: 0px;
+	}
+	h2 {
+		margin: 0px;
+		padding: 80px 0px 20px 0px;
+	}
+	h2, .penplate {
+		margin: 0px auto;
+		width: 500px;
+	}
+	.penplate {
+		min-height: 20px;
+	}
+	</style>
+
+</head>
+<body>
+
+	<h2>Example</h2>
+	<div class="penplate">Here is some basic text.</div>
+	<button class="pen-bold">Bold Something</button>
+
+	<!-- Execute Penplate -->
+    <script>
+    // Execute
+	$(document).ready(function(){
+
+		$('.penplate').penplate();
+	});
+    </script>
+
+</body>
+</html>

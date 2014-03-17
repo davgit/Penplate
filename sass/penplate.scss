@@ -1,0 +1,23 @@
+/**
+ * SASS File:     penplate.sass
+ * Author:        Chris Humboldt
+ * Link:          http://getwebplate.com/plugins/penplate
+ * Last Edited:   17 March 2014
+ */
+
+
+// Table of Contents:
+// ---------------------------------------------------------------------------------------
+// Penplate
+
+
+// Penplate
+// ---------------------------------------------------------------------------------------
+.penplate {
+	&.penplate-default-text-true {
+		color: lighten(#000, 80%);
+	}
+	&:focus {
+		outline: none;
+	}
+}
