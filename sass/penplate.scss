@@ -30,6 +30,20 @@ $img-root 						: "../img";
 // Atoms
 // ---------------------------------------------------------------------------------------
 // Global
+@mixin transform-easing($x: 0px, $y: 0px, $z: 0px, $transition-speed: 0.2s) {
+	-webkit-transform: translate3d($x, $y, $z);
+	-o-transform: translate3d($x, $y, $z);
+	-moz-transform: translate3d($x, $y, $z);
+	transform: translate3d($x, $y, $z);
+	-webkit-transition: -webkit-transform $transition-speed ease-out;
+	-o-transition: -o-transform $transition-speed ease-out;
+	-moz-transition: -moz-transform $transition-speed ease-out;
+	transition: transform $transition-speed ease-out;
+}
+@mixin ios-render() {
+	-webkit-perspective: 1000;
+	-webkit-backface-visibility: hidden;
+}
 @mixin rounded-corners($radius: 2px) {
 	border-radius: $radius;
 	-o-border-radius: $radius;
@@ -122,7 +136,7 @@ $img-root 						: "../img";
 }
 
 // Bottom arrow
-@mixin arrow-bottom() {
+@mixin arrow() {
 	&:after {
 		top: 100%;
 		left: 50%;
@@ -157,8 +171,10 @@ $img-root 						: "../img";
 	display: block;
 	position: fixed;
 	width: 100%;
-	bottom: 0px;
+	top: 0;
 	background-color: lighten(#000, 15%);
+	@include ios-render();
+	@include transform-easing(0px, -$link-dim);
 
 	// Img links
 	.img-link,
@@ -185,8 +201,11 @@ $img-root 						: "../img";
 		width: auto;
 		padding: 0px 4px;
 		@include rounded-corners();
-		@include arrow-bottom();
+		@include arrow();
 	}
+}
+@mixin penplate-controls-show() {
+	@include transform-easing(0px, 0px);
 }
 
 
@@ -197,4 +216,7 @@ $img-root 						: "../img";
 }
 .penplate-controls {
 	@include penplate-controls();
+}
+html.show-penplate-controls .penplate-controls {
+	@include penplate-controls-show();
 }

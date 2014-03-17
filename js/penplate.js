@@ -41,10 +41,59 @@
 			// Penplate functions
 			$object.new_paragraph();
 			$object.edit_selection();
+			$object.activate_controls($this_penplate);
 		}
 		
 
 		// ------------------------------------------------ Functions
+		// Activate controls
+		$object.activate_controls			= function($this_penplate)
+		{
+			// Show
+			$this_penplate.on('dblclick', function()
+			{
+				$object.show_controls('web');	
+			});
+
+			// Hide
+			$('html').on('click', function()
+			{
+				$object.hide_controls();
+			});
+		}
+		$object.show_controls 				= function($type)
+		{
+			// Attach class to HTML
+			if($('html').hasClass('show-penplate-controls') == false)
+			{
+				$('html').addClass('show-penplate-controls');
+			}
+
+			$('.penplate-controls').bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function()
+			{
+				if($('html').hasClass('show-penplate-controls') == true)
+				{
+					$('html').addClass('penplate-controls-open');
+				}
+			});
+		}
+		$object.hide_controls 				= function()
+		{
+			// Remove class on HTML 
+			if($('html').hasClass('penplate-controls-open'))
+			{
+				$('html').removeClass('show-penplate-controls');
+			}
+
+			$('.penplate-controls').bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function()
+			{
+				if($('html').hasClass('show-penplate-controls') == false)
+				{
+					$('html').removeClass('penplate-controls-open');
+				}
+			});
+		}
+
 		// Edit current selection
 		$object.edit_selection				= function()
 		{
