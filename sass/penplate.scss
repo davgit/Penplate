@@ -18,7 +18,9 @@
 
 // Imports
 // ---------------------------------------------------------------------------------------
-@import "blueplate";
+@import "bp-responsive-layout";
+@import "web-colours";
+@import "web-mixins";
 
 
 // Variables
@@ -30,27 +32,6 @@ $img-root 						: "../img";
 // Atoms
 // ---------------------------------------------------------------------------------------
 // Global
-@mixin transform-easing($x: 0px, $y: 0px, $z: 0px, $transition-speed: 0.2s) {
-	-webkit-transform: translate3d($x, $y, $z);
-	-o-transform: translate3d($x, $y, $z);
-	-moz-transform: translate3d($x, $y, $z);
-	transform: translate3d($x, $y, $z);
-	-webkit-transition: -webkit-transform $transition-speed ease-out;
-	-o-transition: -o-transform $transition-speed ease-out;
-	-moz-transition: -moz-transform $transition-speed ease-out;
-	transition: transform $transition-speed ease-out;
-}
-@mixin ios-render() {
-	-webkit-perspective: 1000;
-	-webkit-backface-visibility: hidden;
-}
-@mixin rounded-corners($radius: 2px) {
-	border-radius: $radius;
-	-o-border-radius: $radius;
-	-ms-border-radius: $radius;
-	-moz-border-radius: $radius;
-	-webkit-border-radius: $radius;
-}
 @mixin border-left($size: 1px, $line-color: #000) {
 	border-left: solid $size $line-color;
 
@@ -80,13 +61,6 @@ $img-root 						: "../img";
 		background-image: linear-gradient(right, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
 		background-position: right;
 	}
-}
-@mixin animate($attribute, $transition-speed: 0.2s) {
-	-webkit-transition: $attribute $transition-speed ease-out;
-	-moz-transition: $attribute $transition-speed ease-out;
-	-o-transition: $attribute $transition-speed ease-out;
-	-ms-transition: $attribute $transition-speed ease-out;
-	transition: $attribute $transition-speed ease-out;
 }
 @mixin penplate-global() {
 	&:focus {
@@ -121,7 +95,7 @@ $img-root 						: "../img";
 
 		&:hover {
 			cursor: pointer;
-			color: lighten(#27ae60, 4%);
+			color: lighten($green, 4%);
 			background-position: bottom;
 		}
 	}
@@ -174,7 +148,7 @@ $img-root 						: "../img";
 	top: 0;
 	background-color: lighten(#000, 15%);
 	@include ios-render();
-	@include transform-easing(0px, -$link-dim);
+	@include transform-easing(0px, -80px);
 
 	// Img links
 	.img-link,
@@ -196,16 +170,30 @@ $img-root 						: "../img";
 
 	// Respond
 	@include respond-to(large) {
-		top: 0;
+		position: absolute;
+		left: auto;
+		top: -100px;
 		bottom: auto;
 		width: auto;
 		padding: 0px 4px;
 		@include rounded-corners();
 		@include arrow();
+		@include opacity(0);
+		@include transform-easing(0px, 0px);
+		@include animate(opacity, 0.2s);
 	}
 }
 @mixin penplate-controls-show() {
-	@include transform-easing(0px, 0px);
+
+	// Small show
+	@include respond-to(small, max){
+		@include transform-easing(0px, 0px);
+	}
+
+	// Large show
+	@include respond-to(large) {
+		@include opacity(1);
+	}
 }
 
 
