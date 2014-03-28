@@ -69,9 +69,8 @@
 
 			// Penplate functions
 			$object.new_paragraph();
-			$object.edit_selection();
-			$object.activate_controls($this_penplate);
 			$object.window_resize();
+			$object.activate_controls($this_penplate);
 		}
 		
 
@@ -103,8 +102,15 @@
 
 			$controls_template += '</ul></div>';
 
-			// Append the controls
-			$('body').append($controls_template);
+			// Check is the controls already exists
+			if($('body .penplate-controls').length === 0)
+			{
+				// Append the controls
+				$('body').append($controls_template);
+
+				// Call edit function
+				$object.edit_selection();
+			}
 		}
 
 		// Window type
@@ -260,7 +266,7 @@
 			{
 				// Prevent default link action
 				$e.preventDefault();
-
+				
 				// Some variables
 				$this 						= $(this);
 				$pen_edit					= $this.data('pen-edit');
