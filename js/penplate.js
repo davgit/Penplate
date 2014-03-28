@@ -2,7 +2,7 @@
  * jQuery File: 	penplate.js
  * Type:			plugin
  * Author:        	Chris Humboldt
- * Last Edited:   	17 March 2014
+ * Last Edited:   	28 March 2014
  */
 
 
@@ -266,7 +266,7 @@
 			{
 				// Prevent default link action
 				$e.preventDefault();
-				
+
 				// Some variables
 				$this 						= $(this);
 				$pen_edit					= $this.data('pen-edit');
