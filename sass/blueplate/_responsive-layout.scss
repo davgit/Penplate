@@ -1,8 +1,8 @@
 /**
- * SASS File: 		_bp-responsive-layout.scss
+ * SASS File: 		_responsive-layout.scss
  * Type: 			partial
  * Author:        	Chris Humboldt
- * Last Edited:   	19 March 2014
+ * Last Edited:   	22 March 2014
  */
 
 
@@ -13,22 +13,19 @@
 // Span
 // Order
 // Offsets
-// Show / hide
 // Layout
 // Respond to
-// Call layout classes
 
 
 // Variables
 // ---------------------------------------------------------------------------------------
 // Responsive
-$column-limit 					: 12;
-$default-flex 					: 1;
-$default-flex-percent-option	: false;
-$limit-width 					: 68.750em;
-$break-main 					: 43.813em;
-$min-max 						: false;
-
+$column-limit 						: 12 !default;
+$default-flex 						: 1 !default;
+$default-flex-percent-option		: false !default;
+$limit-width 						: 68.750em !default;
+$break-main 						: 43.813em !default;
+$min-max 							: false !default;
 
 
 // Containers
@@ -159,16 +156,6 @@ $min-max 						: false;
 }
 
 
-// Show / hide
-// ---------------------------------------------------------------------------------------
-@mixin hide() {
-	display: none;
-}
-@mixin show($type: block) {
-	display: $type;
-}
-
-
 // Layout
 // ---------------------------------------------------------------------------------------
 @mixin limit() {
@@ -237,112 +224,6 @@ $min-max 						: false;
 		@else {
 			@media only screen and ($min-max: $breakpoint) { 
 				@content; 
-			}
-		}
-	}
-}
-
-
-// Call layout classes
-// ---------------------------------------------------------------------------------------
-@mixin blueplate-layout() {
-
-	// Containers
-	.row {
-		@include row();
-
-		.row {
-			width: auto;
-		}
-		[class *= "span-"] {
-			float: left;
-			position: relative;
-		}
-
-		// Span loop
-		@for $index from 1 through $column-limit {
-			.span-#{$index} {
-				@include make-span($index);
-			}
-		}
-
-		// Offset loop
-		@for $index from 1 through ($column-limit - 1) {
-			.offset-#{$index} {
-				@include offset($index);
-			}
-			.offset-r-#{$index} {
-				@include offset-r($index);
-			}
-		}
-	}
-
-	// Limit
-	.limit {
-		@include limit();
-	}
-
-	// Respond large
-	@include respond-to(large) {
-		.row {
-
-			// Large span loop
-			@for $index from 1 through $column-limit {
-				.large-span-#{$index} {
-					@include make-span($index);
-				}
-			}
-
-			// Offset loop
-			@for $index from 1 through ($column-limit - 1) {
-				.large-offset-#{$index} {
-					@include offset($index);
-				}
-				.large-offset-r-#{$index} {
-					@include offset-r($index);
-				}
-			}
-		}
-	}
-
-	// Respond small
-	@include respond-to(small) {
-		.row {
-			
-			// Small span loop
-			@for $index from 1 through $column-limit {
-				.small-span-#{$index} {
-					@include make-span($index);
-				}
-			}
-
-			// Offset loop
-			@for $index from 1 through ($column-limit - 1) {
-				.small-offset-#{$index} {
-					@include offset($index);
-				}
-				.small-offset-r-#{$index} {
-					@include offset-r($index);
-				}
-			}
-		}
-	}
-}
-
-// Flex layout
-@mixin blueplate-flex-layout() {
-
-	.flex-row {
-		@include flex-column();
-
-		@include respond-to(large){
-			@include flex-row();
-
-			// Span loop
-			@for $index from 1 through $column-limit {
-				.flex-#{$index} {
-					@include flex-span($index);
-				}
 			}
 		}
 	}

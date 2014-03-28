@@ -1,0 +1,28 @@
+/**
+ * SASS File: 		_execute.scss
+ * Type: 			partial
+ * Author:        	Chris Humboldt
+ * Last Edited:   	28 March 2014
+**/
+
+
+// Table of contents
+// ---------------------------------------------------------------------------------------
+// Execute
+
+
+// Execute
+// ---------------------------------------------------------------------------------------
+@mixin penplate-css() {
+	.penplate {
+		&:focus {
+			outline: none;
+		}
+	}
+	.penplate-controls {
+		@include penplate-controls();
+	}
+	html.show-penplate-controls .penplate-controls {
+		@include penplate-controls-show();
+	}
+}

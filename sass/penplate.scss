@@ -1,210 +1,31 @@
 /**
- * SASS File:     penplate.sass
- * Author:        Chris Humboldt
- * Link:          http://getwebplate.com/plugins/penplate
- * Last Edited:   17 March 2014
- */
+ * SASS File: 		penplate.scss
+ * Type: 			Importer
+ * Author:        	Chris Humboldt
+ * Last Edited:   	28 March 2014
+ * Link:          	http://getwebplate.com/plugins/penplate
+**/
 
 
-// Table of Contents:
+// Table of contents
 // ---------------------------------------------------------------------------------------
 // Imports
-// Variables
-// Atoms
-// Molecules
-// Organisms
-// Execute
+// Call styles
 
 
 // Imports
 // ---------------------------------------------------------------------------------------
-@import "bp-responsive-layout";
-@import "web-colours";
-@import "web-mixins";
+@import "styleplate/animation";
+@import "styleplate/border";
+@import "styleplate/colour";
+@import "styleplate/display";
+@import "styleplate/ios";
+@import "blueplate/responsive-layout";
+
+@import "penplate/import";
 
 
-// Variables
+// Call styles
 // ---------------------------------------------------------------------------------------
-$link-dim 						: 46px;
-$img-root 						: "../img";
-
-
-// Atoms
-// ---------------------------------------------------------------------------------------
-// Global
-@mixin border-left($size: 1px, $line-color: #000) {
-	border-left: solid $size $line-color;
-
-	@media screen and (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
-		border-left: 0px;
-		background-size: $size 100%;
-		background-repeat: no-repeat;
-		background-image: -webkit-gradient(linear, 50% 100%, 50% 0%, color-stop(0%, $line-color), color-stop(50%, $line-color), color-stop(50%, rgba(0, 0, 0, 0)));
-		background-image: -webkit-linear-gradient(left, $line-color,$line-color 50%,rgba(0, 0, 0, 0) 50%);
-		background-image: -moz-linear-gradient(left, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
-		background-image: -o-linear-gradient(left, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
-		background-image: linear-gradient(left, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
-		background-position: left;
-	}
-}
-@mixin border-right($size: 1px, $line-color: #000) {
-	border-right: solid $size $line-color;
-
-	@media screen and (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
-		border-right: 0px;
-		background-size: $size 100%;
-		background-repeat: no-repeat;
-		background-image: -webkit-gradient(linear, 50% 100%, 50% 0%, color-stop(0%, $line-color), color-stop(50%, $line-color), color-stop(50%, rgba(0, 0, 0, 0)));
-		background-image: -webkit-linear-gradient(right, $line-color,$line-color 50%,rgba(0, 0, 0, 0) 50%);
-		background-image: -moz-linear-gradient(right, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
-		background-image: -o-linear-gradient(right, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
-		background-image: linear-gradient(right, $line-color,$line-color 50%,rgba(0,0,0,0) 50%);
-		background-position: right;
-	}
-}
-@mixin penplate-global() {
-	&:focus {
-		outline: none;
-	}
-}
-// Flat list
-@mixin flat-list() {
-	ul {
-		margin: 0px;
-		padding: 0px;
-		list-style: none;
-		font-size: 0;
-
-		li {
-			display: inline-block;
-		}
-	}
-}
-// Links
-@mixin links() {
-	a {
-		display: block;
-		width: $link-dim - 10px;
-		height: $link-dim;
-		line-height: $link-dim + 2px;
-		font-size: 15px;
-		font-family: "Book Antiqua", Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
-		color: #fff;
-		text-decoration: none;
-		@include animate(background-color);
-
-		&:hover {
-			cursor: pointer;
-			color: lighten($green, 4%);
-			background-position: bottom;
-		}
-	}
-}
-@mixin hide-text() {
-	text-indent: -100000px;
-}
-// Backgrounds
-@mixin background-top() {
-	background-position: top;
-	background-repeat: no-repeat;
-}
-
-// Bottom arrow
-@mixin arrow() {
-	&:after {
-		top: 100%;
-		left: 50%;
-		border: solid transparent;
-		content: " ";
-		height: 0;
-		width: 0;
-		position: absolute;
-		pointer-events: none;
-		border-color: rgba(38, 38, 38, 0);
-		border-top-color: #262626;
-		border-width: 8px;
-		margin-left: -8px;
-	}
-}
-
-
-// Molecules
-// ---------------------------------------------------------------------------------------
-// List
-@mixin penplate-list() {
-	@include flat-list();
-	@include links();
-	text-align: center;
-}
-
-
-// Organisms
-// ---------------------------------------------------------------------------------------
-@mixin penplate-controls() {
-	@include penplate-list();
-	display: block;
-	position: fixed;
-	width: 100%;
-	top: 0;
-	background-color: lighten(#000, 15%);
-	@include ios-render();
-	@include transform-easing(0px, -80px);
-
-	// Img links
-	.img-link,
-	.img-quote,
-	.img-image {
-		@include hide-text();
-		@include background-top();
-		background-size: 46px;
-	}
-	.img-link {
-		background-image: url("#{$img-root }/link.png");
-	}
-	.img-quote {
-		background-image: url("#{$img-root }/quote.png");
-	}
-	.img-image {
-		background-image: url("#{$img-root }/image.png");
-	}
-
-	// Respond
-	@include respond-to(large) {
-		position: absolute;
-		left: auto;
-		top: -100px;
-		bottom: auto;
-		width: auto;
-		padding: 0px 4px;
-		@include rounded-corners();
-		@include arrow();
-		@include opacity(0);
-		@include transform-easing(0px, 0px);
-		@include animate(opacity, 0.2s);
-	}
-}
-@mixin penplate-controls-show() {
-
-	// Small show
-	@include respond-to(small, max){
-		@include transform-easing(0px, 0px);
-	}
-
-	// Large show
-	@include respond-to(large) {
-		@include opacity(1);
-	}
-}
-
-
-// Execute
-// ---------------------------------------------------------------------------------------
-.penplate {
-	@include penplate-global();
-}
-.penplate-controls {
-	@include penplate-controls();
-}
-html.show-penplate-controls .penplate-controls {
-	@include penplate-controls-show();
-}
+// Call this mixin if you want to load up all the styles
+@include penplate-css();

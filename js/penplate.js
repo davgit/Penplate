@@ -14,6 +14,7 @@
 		// ------------------------------------------------ Setup
 		var $object 						= this;
 		var $this_penplate;
+		var $window_type;
 		
 
 		// ------------------------------------------------ Settings
@@ -53,6 +54,7 @@
 			$object.new_paragraph();
 			$object.edit_selection();
 			$object.activate_controls($this_penplate);
+			$object.window_resize();
 		}
 		
 
@@ -65,20 +67,31 @@
 				// Set the type variable
 				$('html').addClass('penplate-small-view');
 				$('html').removeClass('penplate-large-view');
+				$window_type 				= 'small-view';
+
+				// Reset the controls position
+				$object.reset_position();
 			}
 			else
 			{
 				// Set the type variable
 				$('html').removeClass('penplate-small-view');
 				$('html').addClass('penplate-large-view');
+				$window_type 				= 'large-view';
 			}
+		}
+
+		// Reset the controls position
+		$object.reset_position					= function()
+		{
+			$('.penplate-controls').css({ top: '0', left: '0' });
 		}
 
 		// Activate controls
 		$object.activate_controls			= function($this_penplate)
 		{
 			// Show
-			$this_penplate.on('mouseup', function()
+			$('html').on('mouseup', function()
 			{
 				$object.check_selection();
 			});
@@ -123,7 +136,7 @@
 		// Show controls
 		$object.show_controls 				= function()
 		{
-			// Position control			
+			// Position control		
 			$object.set_control_position();
 
 			// Show the controls
@@ -146,12 +159,16 @@
 		$object.hide_controls 				= function()
 		{
 			// Remove class on HTML 
-			if($('html').hasClass('penplate-'))
+			if($('html').hasClass('show-penplate-controls'))
 			{
 				if($('html').hasClass('penplate-controls-open'))
 				{
 					$('html').removeClass('show-penplate-controls').removeClass('penplate-controls-open');
-					$('.penplate-controls').css({ top: '-100px' });
+
+					if($window_type == 'large-view')
+					{
+						$('.penplate-controls').css({ top: '-100px' });
+					}
 				}
 			}
 		}
@@ -159,20 +176,23 @@
 		// Set controls position
 		$object.set_control_position 		= function()
 		{
-			// Some variables
-			$control_w 						= $('.penplate-controls').outerWidth();
-			$control_h 						= $('.penplate-controls').height();
-   			$selection 						= window.getSelection();
-   			$range 							= $selection.getRangeAt(0);
-   			$boundary						= $range.getBoundingClientRect();
-   			$boundary_center 				= ($boundary.left + $boundary.right) / 2;
+			if($window_type == 'large-view')
+			{
+				// Some variables
+				$control_w 						= $('.penplate-controls').outerWidth();
+				$control_h 						= $('.penplate-controls').height();
+	   			$selection 						= window.getSelection();
+	   			$range 							= $selection.getRangeAt(0);
+	   			$boundary						= $range.getBoundingClientRect();
+	   			$boundary_center 				= ($boundary.left + $boundary.right) / 2;
 
-			// Some variables
-			$offset_left 					= $boundary_center - ($control_w / 2);
-			$offset_top						= $boundary.top + window.pageYOffset - ($control_h + 12);
+				// Some variables
+				$offset_left 					= $boundary_center - ($control_w / 2);
+				$offset_top						= $boundary.top + window.pageYOffset - ($control_h + 12);
 
-			// Set the position
-			$('.penplate-controls').css({ left: $offset_left, top: $offset_top });
+				// Set the position
+				$('.penplate-controls').css({ left: $offset_left, top: $offset_top });
+			}
         }
 
 		// Edit current selection
@@ -260,6 +280,15 @@
 			    	},
 			    	10);
 			    }
+			});
+		}
+
+		// Window resize
+		$object.window_resize			= function()
+		{
+			$(window).on('resize', function()
+			{
+				$object.window_type();
 			});
 		}
 	};
