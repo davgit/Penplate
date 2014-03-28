@@ -11,20 +11,36 @@
 
 	var $penplate							= function()
 	{	
-		// ------------------------------------------------ Setup
+		// Setup
+		// ---------------------------------------------------------------------------------------
 		var $object 						= this;
 		var $this_penplate;
 		var $window_type;
+		var $controls_template 				= '';
+		var $ar_controls;
 		
 
-		// ------------------------------------------------ Settings
+		// Settings
+		// ---------------------------------------------------------------------------------------
 		$object.settings 					= 
 		{
 			breakpoint						: '700',
+			bold 							: true,
+			italics 						: true,
+			underline 						: true,
+			heading_1						: true,
+			heading_2						: true,
+			quote 							: true,
+			link 							: true,
+			image 							: false,
+			heading_1_tag 					: 'h3',
+			heading_2_tag 					: 'h4',
+			controls 						: ['bold', 'italics', 'underline', 'heading_1', 'heading_2', 'quote', 'link']
 		};
 		
 
-		// ------------------------------------------------ Initialize
+		// Initialize
+		// ---------------------------------------------------------------------------------------
 		$object.init 						= function($element, settings)
 		{	
 			// Check if the settings are being edited via the call
@@ -35,6 +51,7 @@
 			$this_penplate_content 			= jQuery.trim($this_penplate.html());
 
 			// Setup
+			$object.add_controls();
 			$this_penplate.find('p:first').addClass('first-paragraph');
 			if($this_penplate.find('p:first').hasClass('first-paragraph') == false)
 			{
@@ -58,7 +75,38 @@
 		}
 		
 
-		// ------------------------------------------------ Functions
+		// Functions
+		// ---------------------------------------------------------------------------------------
+		// Add controls
+		$object.add_controls					= function()
+		{
+			// Create the controls template
+			$ar_controls 					= 
+			{
+				'bold' 						: '<li><a href="#" data-pen-edit="text-bold">B</a></li>',
+				'italics' 					: '<li><a href="#" data-pen-edit="text-italic">I</a></li>',
+				'underline'					: '<li><a href="#" data-pen-edit="text-underline">U</a></li>',
+				'heading_1'					: '<li><a href="#" data-pen-edit="format-'+ $object.settings.heading_1_tag +'">H1</a></li>',
+				'heading_2'					: '<li><a href="#" data-pen-edit="format-'+ $object.settings.heading_2_tag +'">H2</a></li>',
+				'quote' 					: '<li><a href="#" data-pen-edit="format-blockquote" class="img-quote">Quote</a></li>',
+				'link'						: '<li><a href="#" data-pen-edit="custom-link" class="img-link">Link</a></li>',
+				'image' 					: '<li><a href="#" data-pen-edit="custom-image" class="img-image">Image</a></li>'
+			};
+
+			$controls_template 				+= '<div class="penplate-controls"><ul>';
+
+				// Set each control
+				$.each($object.settings.controls, function($key, $value)
+				{
+					$controls_template 		+= $ar_controls[$value];
+				});
+
+			$controls_template += '</ul></div>';
+
+			// Append the controls
+			$('body').append($controls_template);
+		}
+
 		// Window type
 		$object.window_type					= function()
 		{
@@ -124,9 +172,19 @@
 		{
 			// Check if selection is empty
 			$selection 						= window.getSelection();
+			$range 							= $selection.getRangeAt(0);
+			$range_start 					= $range.startOffset;
+			$range_end 						= $range.endOffset;
+			$is_range 						= false;
+
+			// Set is range
+			if(($range_end - $range_start) != 0)
+			{
+				$is_range 					= true;
+			}
 
 			// Only show if range
-			if($selection.type == 'Range')
+			if($is_range == true)
 			{
 				// Show the controls
 				$object.show_controls();
