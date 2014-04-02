@@ -69,6 +69,42 @@ $img-root 						: "../img/penplate";
 		background-image: url("#{$img-root }/image.png");
 	}
 
+	// Link control
+	.penplate-link {
+		@include hide();
+		@include row();
+		min-width:  252px;
+		height: 46px;
+		background-color: lighten(#000, 15%);
+		overflow: hidden;
+
+		.input-container {
+			@include span(8);
+			@include no-spacing();
+
+			input {
+				width: 100%;
+				height: 48px;
+				padding-left: 8px;
+				border: 0px;
+				color: $white;
+				font-size: 12px;
+				font-family: "Book Antiqua", Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+				outline: none;
+				-webkit-appearance: none;
+				background: transparent;
+			}
+		}
+		a {
+			@include span(4);
+			display: inline-block;
+			@include no-spacing();
+			padding-right: 8px;
+			font-size: 13px;
+			text-align: right;
+		}
+	}
+
 	// Respond
 	@include respond-to(large) {
 		position: absolute;

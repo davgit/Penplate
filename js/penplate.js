@@ -2,7 +2,7 @@
  * jQuery File: 	penplate.js
  * Type:			plugin
  * Author:        	Chris Humboldt
- * Last Edited:   	28 March 2014
+ * Last Edited:   	1 April 2014
  */
 
 
@@ -18,6 +18,7 @@
 		var $window_type;
 		var $controls_template 				= '';
 		var $ar_controls;
+		var $saved_selection;
 		
 
 		// Settings
@@ -25,14 +26,6 @@
 		$object.settings 					= 
 		{
 			breakpoint						: '700',
-			bold 							: true,
-			italics 						: true,
-			underline 						: true,
-			heading_1						: true,
-			heading_2						: true,
-			quote 							: true,
-			link 							: true,
-			image 							: false,
 			heading_1_tag 					: 'h3',
 			heading_2_tag 					: 'h4',
 			controls 						: ['bold', 'italics', 'underline', 'heading_1', 'heading_2', 'quote', 'link']
@@ -71,6 +64,7 @@
 			$object.new_paragraph();
 			$object.window_resize();
 			$object.activate_controls($this_penplate);
+			$object.link_control();
 		}
 		
 
@@ -92,7 +86,18 @@
 				'image' 					: '<li><a href="#" data-pen-edit="custom-image" class="img-image">Image</a></li>'
 			};
 
-			$controls_template 				+= '<div class="penplate-controls"><ul>';
+			$controls_template 				+= '<div class="penplate-controls">';
+
+				// Set the link input
+				$controls_template 			+= '<div class="penplate-link">';
+
+					$controls_template 		+= '<div class="input-container"><input type="text" value="" placeholder="Your link..." /></div>';
+					$controls_template 		+= '<a href="#" data-pen-edit="custom-link-cancel" class="link-cancel">Cancel</a>';
+
+				$controls_template 			+= '</div>';
+
+				// Set the ul opening tag
+				$controls_template 			+= '<ul>';
 
 				// Set each control
 				$.each($object.settings.controls, function($key, $value)
@@ -145,7 +150,7 @@
 		$object.activate_controls			= function($this_penplate)
 		{
 			// Show
-			$('html').on('mouseup', function()
+			$this_penplate.on('mouseup', function()
 			{
 				$object.check_selection();
 			});
@@ -173,6 +178,20 @@
 			});
 		}
 
+		// Restore selection
+	    $object.restore_selection			= function($saved_selection)
+	    {
+	        if($saved_selection)
+	        {
+	            $selection.removeAllRanges();
+
+	            for(i = 0, len = $saved_selection.length; i < len; i += 1)
+	            {
+	                $selection.addRange($saved_selection[i]);
+	            }
+	        }
+	    }
+
 		// Check selection
 		$object.check_selection 			= function()
 		{
@@ -183,7 +202,26 @@
 			$range_end 						= $range.endOffset;
 			$is_range 						= false;
 
-			// Set is range
+			// Save selection
+			if($selection)
+			{
+		        $selection 					= window.getSelection();
+		        if($selection.getRangeAt && $selection.rangeCount) 
+		        {
+		            var $ranges 			= [];
+		            for (var i = 0, len = $selection.rangeCount; i < len; ++i) 
+		            {
+		                $ranges.push($selection.getRangeAt(i));
+		            }
+		            $saved_selection		= $ranges;
+		        }
+		    }
+		    else if(document.selection && document.selection.createRange)
+		    {
+		        $saved_selection			= document.selection.createRange();
+		    }
+
+			// Set if selection is a range
 			if(($range_end - $range_start) != 0)
 			{
 				$is_range 					= true;
@@ -227,8 +265,13 @@
 			{
 				if($('html').hasClass('penplate-controls-open'))
 				{
+					// Edit HTML classes
 					$('html').removeClass('show-penplate-controls').removeClass('penplate-controls-open');
 
+					// Hide the input
+					$object.link_input_hide();
+
+					// Reposition controls
 					if($window_type == 'large-view')
 					{
 						$('.penplate-controls').css({ top: '-100px' });
@@ -317,8 +360,30 @@
 		    	{
 					$object.set_control_position();
 		    	},
-		    	30);
+		    	1);
 			});
+
+			$('.penplate-controls .penplate-link input').on('keyup', function($e)
+			{
+                if($e.keyCode === 13) 
+                {
+                	// Prevent default action
+                    $e.preventDefault();
+
+                    // Some variables
+                    $link_input_val 	= $(this).val();
+
+                    // Create the link on the selection
+                    $object.restore_selection($saved_selection);
+                    document.execCommand('createLink', false, $link_input_val);
+
+                    // Hide the controls
+                    $object.hide_controls();
+
+                    // Reset link input
+                    $(this).val('');
+                }
+            });
 		}
 
 		// Get parent tag type
@@ -348,24 +413,64 @@
 		}
 
 		// Window resize
-		$object.window_resize			= function()
+		$object.window_resize				= function()
 		{
 			$(window).on('resize', function()
 			{
 				$object.window_type();
 			});
 		}
+
+		// Link control
+		$object.link_control 				= function()
+		{
+			// Activate
+			$('.penplate-controls a.img-link').on('click', function($e)
+			{
+				// Show link input
+				$object.link_input_show();				
+			});
+
+			// Cancel
+			$('.penplate-controls .link-cancel').on('click', function($e)
+			{
+				// Prevent default action
+				$e.preventDefault();
+
+				// Hide link input
+				$object.link_input_hide();	
+
+				// Restore selection
+				$object.restore_selection($saved_selection);
+			});
+		}
+
+		// Show / hide link input
+		$object.link_input_show				= function()
+		{
+			$('.penplate-controls ul').hide();
+			$('.penplate-controls .penplate-link').fadeIn('fast', function()
+			{
+				$('.penplate-controls .penplate-link input').focus();
+			});
+		}
+		$object.link_input_hide 			= function()
+		{
+			// Edit DOM
+			$('.penplate-controls ul').fadeIn();
+			$('.penplate-controls .penplate-link').hide();
+		}
 	};
 	
 	// Call the plugin
 	$.fn.penplate							= function($options)
 	{	
-		var len 							= this.length;
+		var $len 							= this.length;
 
 		return this.each(function(index)
 		{	
-			var me 							= $(this), key = 'penplate' + (len > 1 ? '-' + ++index : ''), instance = (new $penplate).init(me, $options);
-			me.data(key, instance).data('key', key);
+			var $me 						= $(this), $key = 'penplate' + ($len > 1 ? '-' + ++index : ''), $instance = (new $penplate).init($me, $options);
+			$me.data($key, $instance).data('key', $key);
 		});
 	};
 	
