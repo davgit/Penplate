@@ -2,7 +2,7 @@
  * jQuery File: 	penplate.js
  * Type:			plugin
  * Author:        	Chris Humboldt
- * Last Edited:   	1 April 2014
+ * Last Edited:   	7 April 2014
  */
 
 
@@ -16,9 +16,12 @@
 		var $object 						= this;
 		var $this_penplate;
 		var $window_type;
+		var $window_w 						= $(window).width();
 		var $controls_template 				= '';
 		var $ar_controls;
 		var $saved_selection;
+		var $obj_data_tags 					= {b: 'text-bold', i: 'text-italic', u: 'text-underline', blockquote: 'format-blockquote', a: 'custom-link'};
+		var $current_nodes 					= [];
 		
 
 		// Settings
@@ -45,13 +48,14 @@
 
 			// Setup
 			$object.add_controls();
-			$this_penplate.find('p:first').addClass('first-paragraph');
-			if($this_penplate.find('p:first').hasClass('first-paragraph') == false)
+			if($this_penplate.find('p:first').length < 1)
 			{
 				$this_penplate.html('<p>'+ $this_penplate_content +'</p>');
 			}
 			$this_penplate.attr({ 'contenteditable' : 'true' });
 			document.execCommand('defaultParagraphSeparator', false, 'p');
+			$obj_data_tags[$object.settings.heading_1_tag] 		= 'format-' + $object.settings.heading_1_tag;
+			$obj_data_tags[$object.settings.heading_2_tag] 		= 'format-' + $object.settings.heading_2_tag;
 
 			// Window type
 			$object.window_type();
@@ -138,10 +142,13 @@
 				$('html').addClass('penplate-large-view');
 				$window_type 				= 'large-view';
 			}
+
+			// Set the window width
+			$window_w 						= $(window).width();
 		}
 
 		// Reset the controls position
-		$object.reset_position					= function()
+		$object.reset_position				= function()
 		{
 			$('.penplate-controls').css({ top: '0', left: '0' });
 		}
@@ -201,8 +208,62 @@
 			$range_start 					= $range.startOffset;
 			$range_end 						= $range.endOffset;
 			$is_range 						= false;
+			$parent_node					= null;
+            $current_nodes 					= [];
+
+			// Get parent node
+			$parent_node 					= $object.get_parent_node($range);
+
+			// Loop through parent nodes
+			while($parent_node.tagName != undefined)
+			{
+				// Tag name
+				$tag_name 					= $parent_node.tagName.toLowerCase();
+
+				// Add to current nodes array
+				$current_nodes.push($tag_name);
+
+				// Check for root paragraph node
+				if($tag_name != 'p')
+				{
+					// Set the active button states
+					$('.penplate-controls [data-pen-edit="'+ $obj_data_tags[$tag_name] +'"]').addClass('active');
+
+					// Set the new parent node
+					$parent_node 				= $parent_node.parentNode;
+
+					// Break if root node is heading as well
+					if($tag_name.substring(0, 1) == 'h')
+					{
+						break;
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
 
 			// Save selection
+			$object.save_selection();
+
+			// Set if selection is a range
+			if(($range_end - $range_start) != 0)
+			{
+				$is_range 					= true;
+			}
+
+			// Only show if range
+			if($is_range == true)
+			{
+				// Show the controls
+				$object.show_controls();
+			}
+		}
+
+		// Save selection
+		$object.save_selection 				= function()
+		{	
 			if($selection)
 			{
 		        $selection 					= window.getSelection();
@@ -220,19 +281,16 @@
 		    {
 		        $saved_selection			= document.selection.createRange();
 		    }
+		}
 
-			// Set if selection is a range
-			if(($range_end - $range_start) != 0)
-			{
-				$is_range 					= true;
-			}
-
-			// Only show if range
-			if($is_range == true)
-			{
-				// Show the controls
-				$object.show_controls();
-			}
+		// Check range
+		// From Tim Down - http://stackoverflow.com/questions/15867542/range-object-get-selection-parent-node-chrome-vs-firefox
+		$object.range_check					= function($range) 
+		{
+		    var $start_node 				= $range.startContainer;
+		    return $start_node === $range.endContainer &&
+		           $start_node.hasChildNodes() &&
+		           $range.endOffset === $range.startOffset + 1;
 		}
 
 		// Show controls
@@ -268,6 +326,9 @@
 					// Edit HTML classes
 					$('html').removeClass('show-penplate-controls').removeClass('penplate-controls-open');
 
+					// Remove active buttons
+					$('.penplate-controls a.active').removeClass('active');
+
 					// Hide the input
 					$object.link_input_hide();
 
@@ -286,6 +347,7 @@
 			if($window_type == 'large-view')
 			{
 				// Some variables
+				$window
 				$control_w 						= $('.penplate-controls').outerWidth();
 				$control_h 						= $('.penplate-controls').height();
 	   			$selection 						= window.getSelection();
@@ -296,6 +358,16 @@
 				// Some variables
 				$offset_left 					= $boundary_center - ($control_w / 2);
 				$offset_top						= $boundary.top + window.pageYOffset - ($control_h + 12);
+
+				// Contain within the page
+				if($offset_left < 0)
+				{
+					$offset_left 				= 0;
+				}
+				else if(($offset_left + $control_w) > $window_w)
+				{
+					$offset_left 				= $window_w - $control_w;
+				}
 
 				// Set the position
 				$('.penplate-controls').css({ left: $offset_left, top: $offset_top });
@@ -316,6 +388,16 @@
 				$ex_pen_edit				= $pen_edit.split('-');
 				$pen_edit_type 				= $ex_pen_edit[0];
 				$pen_edit_action 			= $ex_pen_edit[1];
+
+				// Add active state
+				if($this.hasClass('active') == true)
+				{
+					$this.removeClass('active');
+				}
+				else
+				{
+					$this.addClass('active');
+				}
 
 				// Text actions
 				if($pen_edit_type == 'text')
@@ -340,13 +422,14 @@
 						{
 			                document.execCommand('outdent', false, null);
 
-			                if($super_parent != 'blockquote'){
+			                if($super_parent != 'blockquote')
+			                {
 								document.execCommand('formatBlock', false, $pen_edit_action);
 							}
 			            }
 			            else
 			            {
-			            	document.execCommand('formatBlock', false, $pen_edit_action);
+				            document.execCommand('formatBlock', false, $pen_edit_action);
 			            }
 					}
 					else
@@ -354,6 +437,9 @@
 						document.execCommand('formatBlock', false, 'p');
 					}
 				}
+
+				// Save selection
+				$object.save_selection();
 
 				// Reposition controls if need be
 				setTimeout(function()
@@ -384,6 +470,33 @@
                     $(this).val('');
                 }
             });
+		}
+
+		// Get parent node
+		$object.get_parent_node 			= function($range)
+		{
+			// Check range
+			$check_range 					= $object.range_check($range);
+
+			// Parent node
+			if($check_range)
+			{
+			    // Selection encompasses a single element
+			    $parent_node 				= $range.startContainer.childNodes[$range.startOffset];
+			} 
+			else if($range.startContainer.nodeType === 3)
+			{
+			    // Selection range startContainers inside a text node, so get its parent
+			    $parent_node 				= $range.startContainer.parentNode;
+			} 
+			else 
+			{
+			    // Selection starts inside an element
+			    $parent_node 				= $range.startContainer;
+			}
+
+			// Return
+			return $parent_node;	
 		}
 
 		// Get parent tag type
@@ -427,8 +540,29 @@
 			// Activate
 			$('.penplate-controls a.img-link').on('click', function($e)
 			{
+				// Some variables
+				$is_link 					= false;
+
+				// Check in array
+				$.each($current_nodes, function($key, $val)
+				{
+					if($val == 'a')
+					{
+						$is_link 			= true;
+					}
+				});
+
 				// Show link input
-				$object.link_input_show();				
+				if($is_link == true)
+				{
+                	document.execCommand('unlink', false, null);
+                	$object.remove_current_node('a');
+                	$object.save_selection();
+                }
+                else
+				{
+					$object.link_input_show();				
+				}
 			});
 
 			// Cancel
@@ -443,6 +577,19 @@
 				// Restore selection
 				$object.restore_selection($saved_selection);
 			});
+		}
+
+		// Remove current node
+		$object.remove_current_node 		= function($node)
+		{
+			// Some variables
+			$node_index 					= $current_nodes.indexOf($node);
+
+			// Splice
+			if($node_index > -1)
+			{
+			    $current_nodes.splice($node_index, 1);
+			}
 		}
 
 		// Show / hide link input

@@ -44,7 +44,7 @@ $link-dim 						: 46px;
 		text-decoration: none;
 		@include animate(background-color);
 
-		&:hover {
+		&:hover, &.active {
 			cursor: pointer;
 			color: lighten($green, 4%);
 			background-position: bottom;
