@@ -40,6 +40,12 @@ Example HTML:
 ```
 
 
+Browser Support
+========
+
+This is a beta plugin and has only been tested in Chrome, Firefox, Safari and Opera (webkit). IE testing is still required.
+
+
 Copyright and License
 ========
 
