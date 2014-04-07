@@ -25,8 +25,7 @@ Once included, call Penplate by referencing the containing class in your javascr
 Javascript call:
 
 ```
-$(document).ready(function()
-{
+$(document).ready(function(){
 	$('.penplate-example').penplate();
 });
 
