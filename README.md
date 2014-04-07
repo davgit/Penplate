@@ -1,7 +1,7 @@
 Penplate
 ========
 
-A jQuery HTML5 Editor for quick easy inline text editing.
+A jQuery based HTML5 Editor for quick easy inline text editing.
 
 
 Getting Started
