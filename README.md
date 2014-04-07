@@ -7,7 +7,7 @@ A jQuery based HTML5 Editor for quick easy inline text editing. Based on the <a 
 Getting Started
 ========
 
-To get Penplate working include the following files in your porject.
+To get Penplate working include the following files in your project.
 
 ```
 <head>
