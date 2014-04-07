@@ -1,7 +1,7 @@
 Penplate
 ========
 
-A jQuery based HTML5 Editor for quick easy inline text editing.
+A jQuery based HTML5 Editor for quick easy inline text editing. Based on the <a href="http://medium.com/">Medium</a> editor.
 
 
 Getting Started
@@ -25,9 +25,11 @@ Once included, call Penplate by referencing the containing class in your javascr
 Javascript call:
 
 ```
-$(document).ready(function(){
+$(document).ready(function()
+{
 	$('.penplate-example').penplate();
 });
+```
 
 Example HTML:
 
