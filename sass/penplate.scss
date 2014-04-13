@@ -22,5 +22,8 @@
 
 // Call styles
 // ---------------------------------------------------------------------------------------
+// Global setup
+@include global-setup();
+
 // Call this mixin if you want to load up all the styles
 @include penplate-css();

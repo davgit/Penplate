@@ -2,7 +2,7 @@
  * jQuery File: 	penplate.js
  * Type:			plugin
  * Author:        	Chris Humboldt
- * Last Edited:   	7 April 2014
+ * Last Edited:   	13 April 2014
  */
 
 
@@ -22,6 +22,7 @@
 		var $saved_selection;
 		var $obj_data_tags 					= {b: 'text-bold', i: 'text-italic', u: 'text-underline', blockquote: 'format-blockquote', a: 'custom-link'};
 		var $current_nodes 					= [];
+		var $webplate_check 				= false;
 		
 
 		// Settings
@@ -45,6 +46,13 @@
 			// Some variables
 			$this_penplate					= $element;
 			$this_penplate_content 			= jQuery.trim($this_penplate.html());
+
+			// Webplate check
+			$check_webplate					= $('.webplate:first');
+			if(($check_webplate) && ($check_webplate.length > 0))
+			{
+				$webplate_check				= true;
+			}
 
 			// Setup
 			$object.add_controls();
@@ -112,10 +120,17 @@
 			$controls_template += '</ul></div>';
 
 			// Check is the controls already exists
-			if($('body .penplate-controls').length === 0)
+			if($('.penplate-controls:first').length == 0)
 			{
 				// Append the controls
-				$('body').append($controls_template);
+				if($webplate_check == false)
+				{
+					$('body').append($controls_template);
+				}
+				else 
+				{
+					$('.webplate .webplate-content').append($controls_template);
+				}
 
 				// Call edit function
 				$object.edit_selection();
@@ -357,7 +372,14 @@
 
 				// Some variables
 				$offset_left 					= $boundary_center - ($control_w / 2);
-				$offset_top						= $boundary.top + window.pageYOffset - ($control_h + 12);
+				if($webplate_check == false)
+				{
+					$offset_top					= $boundary.top + window.pageYOffset - ($control_h + 12);
+				}
+				else
+				{
+					$offset_top					= $boundary.top + $('.webplate .webplate-content').scrollTop() - ($control_h + 12);
+				}
 
 				// Contain within the page
 				if($offset_left < 0)

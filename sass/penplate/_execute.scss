@@ -14,8 +14,6 @@
 // Execute
 // ---------------------------------------------------------------------------------------
 @mixin penplate-css() {
-	@include global-setup();
-	
 	.penplate {
 		&:focus {
 			outline: none;
