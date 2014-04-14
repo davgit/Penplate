@@ -2,7 +2,7 @@
  * SASS File: 		_execute.scss
  * Type: 			partial
  * Author:        	Chris Humboldt
- * Last Edited:   	28 March 2014
+ * Last Edited:   	14 April 2014
 **/
 
 
@@ -22,7 +22,13 @@
 	.penplate-controls {
 		@include penplate-controls();
 	}
-	html.show-penplate-controls .penplate-controls {
+	.penplate-controls.penplate-large {
+		@include penplate-controls-large();
+	}
+	html.show-penplate-controls.penplate-small-view .penplate-controls.penplate-small {
 		@include penplate-controls-show();
+	}
+	html.show-penplate-controls.penplate-large-view .penplate-controls.penplate-large {
+		@include penplate-controls-show-large();
 	}
 }

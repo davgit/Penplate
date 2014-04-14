@@ -2,7 +2,7 @@
  * jQuery File: 	penplate.js
  * Type:			plugin
  * Author:        	Chris Humboldt
- * Last Edited:   	13 April 2014
+ * Last Edited:   	14 April 2014
  */
 
 
@@ -122,6 +122,8 @@
 			// Check is the controls already exists
 			if($('.penplate-controls:first').length == 0)
 			{
+				$('body').append($controls_template);
+
 				// Append the controls
 				if($webplate_check == false)
 				{
@@ -131,6 +133,10 @@
 				{
 					$('.webplate .webplate-content').append($controls_template);
 				}
+
+				// Class controls
+				$('.penplate-controls:last').addClass('penplate-small');
+				$('.penplate-controls:first').addClass('penplate-large');
 
 				// Call edit function
 				$object.edit_selection();
@@ -165,7 +171,7 @@
 		// Reset the controls position
 		$object.reset_position				= function()
 		{
-			$('.penplate-controls').css({ top: '0', left: '0' });
+			$('.penplate-controls.penplate-large').css({ top: '-100px', left: '0' });
 		}
 
 		// Activate controls
@@ -348,10 +354,7 @@
 					$object.link_input_hide();
 
 					// Reposition controls
-					if($window_type == 'large-view')
-					{
-						$('.penplate-controls').css({ top: '-100px' });
-					}
+					$('.penplate-controls.penplate-large').css({ top: '-100px' });
 				}
 			}
 		}
@@ -363,8 +366,8 @@
 			{
 				// Some variables
 				$window
-				$control_w 						= $('.penplate-controls').outerWidth();
-				$control_h 						= $('.penplate-controls').height();
+				$control_w 						= $('.penplate-controls.penplate-large').outerWidth();
+				$control_h 						= $('.penplate-controls.penplate-large').height();
 	   			$selection 						= window.getSelection();
 	   			$range 							= $selection.getRangeAt(0);
 	   			$boundary						= $range.getBoundingClientRect();
@@ -392,7 +395,7 @@
 				}
 
 				// Set the position
-				$('.penplate-controls').css({ left: $offset_left, top: $offset_top });
+				$('.penplate-controls.penplate-large').css({ left: $offset_left, top: $offset_top });
 			}
         }
 
@@ -485,8 +488,21 @@
                     $object.restore_selection($saved_selection);
                     document.execCommand('createLink', false, $link_input_val);
 
-                    // Hide the controls
-                    $object.hide_controls();
+
+					// Some variables
+					$parent						= $(this).parents('.penplate-controls');
+					if($parent.hasClass('penplate-large') == true)
+					{
+						$parent_type 			= 'penplate-large';
+					}
+					else
+					{
+						$parent_type 			= 'penplate-small';	
+					}
+
+					// Hide link input
+					$object.link_input_hide($parent_type);
+					$('.penplate-controls.'+ $parent_type +' a.img-link').addClass('active');
 
                     // Reset link input
                     $(this).val('');
@@ -564,6 +580,15 @@
 			{
 				// Some variables
 				$is_link 					= false;
+				$parent						= $(this).parents('.penplate-controls');
+				if($parent.hasClass('penplate-large') == true)
+				{
+					$parent_type 			= 'penplate-large';
+				}
+				else
+				{
+					$parent_type 			= 'penplate-small';	
+				}
 
 				// Check in array
 				$.each($current_nodes, function($key, $val)
@@ -583,7 +608,7 @@
                 }
                 else
 				{
-					$object.link_input_show();				
+					$object.link_input_show($parent_type);				
 				}
 			});
 
@@ -593,8 +618,19 @@
 				// Prevent default action
 				$e.preventDefault();
 
+				// Some variables
+				$parent						= $(this).parents('.penplate-controls');
+				if($parent.hasClass('penplate-large') == true)
+				{
+					$parent_type 			= 'penplate-large';
+				}
+				else
+				{
+					$parent_type 			= 'penplate-small';	
+				}
+
 				// Hide link input
-				$object.link_input_hide();	
+				$object.link_input_hide($parent_type);
 
 				// Restore selection
 				$object.restore_selection($saved_selection);
@@ -615,19 +651,21 @@
 		}
 
 		// Show / hide link input
-		$object.link_input_show				= function()
+		$object.link_input_show				= function($parent_type)
 		{
-			$('.penplate-controls ul').hide();
-			$('.penplate-controls .penplate-link').fadeIn('fast', function()
+			console.log($parent_type);
+			$('.penplate-controls.'+ $parent_type +' ul').hide();
+			$('.penplate-controls.'+ $parent_type +' .penplate-link').fadeIn('fast', function()
 			{
-				$('.penplate-controls .penplate-link input').focus();
+				$('.penplate-controls.'+ $parent_type +' .penplate-link input').focus();
 			});
 		}
-		$object.link_input_hide 			= function()
+		$object.link_input_hide 			= function($parent_type)
 		{
 			// Edit DOM
-			$('.penplate-controls ul').fadeIn();
-			$('.penplate-controls .penplate-link').hide();
+			$('.penplate-controls.'+ $parent_type +' ul').fadeIn();
+			$('.penplate-controls.'+ $parent_type +' .penplate-link').hide();
+			$('.penplate-controls.'+ $parent_type +' a.img-link').removeClass('active');
 		}
 	};
 	

@@ -2,7 +2,7 @@
  * SASS File: 		_control.scss
  * Type: 			partial
  * Author:        	Chris Humboldt
- * Last Edited:   	28 March 2014
+ * Last Edited:   	14 April 2014
 **/
 
 
@@ -104,31 +104,23 @@ $img-root 						: "../img/penplate";
 			text-align: right;
 		}
 	}
-
-	// Respond
-	@include respond-to(large) {
-		position: absolute;
-		left: auto;
-		top: -100px;
-		bottom: auto;
-		width: auto;
-		padding: 0px 4px;
-		@include arrow-bottom();
-		@include border-radius();
-		@include opacity(0);
-		@include transform-easing(0px, 0px);
-		@include animate(opacity, 0.2s);
-	}
+}
+@mixin penplate-controls-large() {
+	position: absolute;
+	left: auto;
+	top: -100px;
+	bottom: auto;
+	width: auto;
+	padding: 0px 4px;
+	@include arrow-bottom();
+	@include border-radius();
+	@include opacity(0);
+	@include transform-easing(0px, 0px);
+	@include animate(opacity, 0.2s);
 }
 @mixin penplate-controls-show() {
-
-	// Small show
-	@include respond-to(small, max){
-		@include transform-easing(0px, 0px);
-	}
-
-	// Large show
-	@include respond-to(large) {
-		@include opacity(1);
-	}
+	@include transform-easing(0px, 0px);
+}
+@mixin penplate-controls-show-large() {
+	@include opacity(1);
 }
